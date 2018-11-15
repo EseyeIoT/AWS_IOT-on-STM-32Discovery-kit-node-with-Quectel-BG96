@@ -312,7 +312,6 @@ void vSTM32L475putc( void * pv,
 static void prvMiscInitialization( void )
 {
     /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-	int status;
 	conn_led = 0;
 	got_certs = 0;
 
