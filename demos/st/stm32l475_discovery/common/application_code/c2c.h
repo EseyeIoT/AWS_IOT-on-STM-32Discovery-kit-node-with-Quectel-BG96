@@ -140,19 +140,12 @@ typedef enum {
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
 void C2C_Power_Off(void);
-//MC void C2C_HwResetAndPowerUp(void);
 C2C_RegiStatus_t C2C_Init(uint16_t registration_timeout_sec);
 C2C_Ret_t        C2C_GetSignalQualityStatus(int32_t *Qvalue);
 C2C_Ret_t        C2C_ListOperators(char *Operators);
 C2C_Ret_t        C2C_GetCurrentOperator(char *Operator, int32_t Bufsize);
 C2C_Ret_t        C2C_ForceOperator(int32_t OperatorCode);
 
-//MC C2C_Ret_t        C2C_ConfigureAP(uint8_t ContextType,
-//                                 const char* Apn,
-//                                 const char* Username,
-//                                 const char* Password,
-//                                 uint8_t AuthenticationMode);
-//C2C_Ret_t        C2C_Connect(void);
 C2C_Ret_t        C2C_Disconnect(void);
 C2C_APState_t    C2C_IsConnected(void);
 
@@ -162,7 +155,6 @@ C2C_Ret_t        C2C_GetActiveIpAddresses(char *IPaddr_string, uint8_t* IPaddr_i
 C2C_Ret_t        C2C_Ping(char *host_addr_string, uint16_t count, uint16_t timeout_sec);
 C2C_Ret_t        C2C_GetHostAddress(const char *location, uint8_t *ipaddr);
 
-//C2C_Ret_t        C2C_StartClientConnection(uint32_t socket, C2C_Protocol_t type, const char* host_url, uint8_t* ipaddr, uint16_t port, uint16_t local_port);
 C2C_Ret_t        C2C_StopClientConnection(uint32_t socket);
 C2C_Ret_t        C2C_StartServerConnection(uint32_t socket, C2C_Protocol_t type, uint16_t port, uint16_t local_port);
 C2C_Ret_t        C2C_StopServerConnection(uint32_t socket);

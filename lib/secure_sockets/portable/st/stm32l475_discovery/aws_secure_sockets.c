@@ -728,8 +728,8 @@ int32_t SOCKETS_Connect( Socket_t xSocket,
         /* Setup TLS parameters. */
         xTLSParams.ulSize = sizeof( xTLSParams );
         xTLSParams.pcDestination = pxSecureSocket->pcDestination;
-        xTLSParams.pcServerCertificate = (char*)anynet_sim_file_data[AN_ROOTCA].data; //MCpxSecureSocket->pcServerCertificate;
-        xTLSParams.ulServerCertificateLength = anynet_sim_file_data[AN_ROOTCA].data_length; //MCpxSecureSocket->ulServerCertificateLength;
+        xTLSParams.pcServerCertificate = (char*)anynet_sim_file_data[AN_ROOTCA].data;
+        xTLSParams.ulServerCertificateLength = anynet_sim_file_data[AN_ROOTCA].data_length;
         xTLSParams.pvCallerContext = ( void * ) xSocket;
         xTLSParams.pxNetworkRecv = &( prvNetworkRecv );
         xTLSParams.pxNetworkSend = &( prvNetworkSend );
