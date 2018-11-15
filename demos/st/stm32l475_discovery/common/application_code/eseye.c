@@ -901,7 +901,7 @@ int anynet_get_data(void)
 		}
 
 		// check crc
-		if(cert_calc_sim_checksum(0, anynet_sim_file_data[ii].data_length, anynet_sim_file_data[ii].data) != anynet_sim_file_data[ii].crc)
+		if(cert_calc_sim_checksum(0, anynet_sim_file_data[ii].data_length, (uint8_t*)anynet_sim_file_data[ii].data) != anynet_sim_file_data[ii].crc)
 		{
 			configPRINTF(("Waiting for the Sim File System to be completed\r\n"));
 			return 0;
@@ -947,17 +947,17 @@ int anynet_convert_certs(void)
 		// convert to base64
 		if(anynet_sim_file_data[ii].base64 == 1)
 		{
-			data_ptr = anynet_base64_encode(anynet_sim_file_data[ii].data, anynet_sim_file_data[ii].data_length, &out_length);
+			data_ptr = anynet_base64_encode( (char*)anynet_sim_file_data[ii].data, anynet_sim_file_data[ii].data_length, &out_length);
 			// add header
 			offset = 0;
 			if(ii != 4)
 			{
-				sprintf(anynet_sim_file_data[ii].data, "-----BEGIN CERTIFICATE-----\n");
+				sprintf( (char*)anynet_sim_file_data[ii].data, "-----BEGIN CERTIFICATE-----\n");
 				offset = 28;
 			}
 			else
 			{
-				sprintf(anynet_sim_file_data[ii].data, "-----BEGIN RSA PRIVATE KEY-----\n");
+				sprintf( (char*)anynet_sim_file_data[ii].data, "-----BEGIN RSA PRIVATE KEY-----\n");
 				offset = 32;
 			}
 
@@ -986,12 +986,12 @@ int anynet_convert_certs(void)
 
 			if(ii != 4)
 			{
-				sprintf(&anynet_sim_file_data[ii].data[offset], "-----END CERTIFICATE-----\n");
+				sprintf( (char*)&anynet_sim_file_data[ii].data[offset], "-----END CERTIFICATE-----\n");
 				offset += 28;
 			}
 			else
 			{
-				sprintf(&anynet_sim_file_data[ii].data[offset], "-----END RSA PRIVATE KEY-----\n");
+				sprintf( (char*)&anynet_sim_file_data[ii].data[offset], "-----END RSA PRIVATE KEY-----\n");
 				offset += 32;
 			}
 
