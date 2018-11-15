@@ -35,12 +35,12 @@
 /*
  * MQTT Broker endpoint.
  */
-static const char clientcredentialMQTT_BROKER_ENDPOINT[] = "...amazonaws.com";
+//static const char clientcredentialMQTT_BROKER_ENDPOINT[] = "...amazonaws.com";
 
 
 /* Use of a "define" and not a "static const" here to be able to
 * use pre-compile concatenation on the string. */
-#define clientcredentialIOT_THING_NAME "board"
+//#define clientcredentialIOT_THING_NAME "board"
 
 /*
  * Port number the MQTT broker is using.
