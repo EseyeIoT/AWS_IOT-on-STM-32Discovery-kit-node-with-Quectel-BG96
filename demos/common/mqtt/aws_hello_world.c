@@ -192,7 +192,7 @@ static BaseType_t prvCreateClientAndConnectToBroker( void )
         democonfigMQTT_AGENT_CONNECT_FLAGS,   		/* Connection flags. */
         pdFALSE,                              		/* Deprecated. */
         clientcredentialMQTT_BROKER_PORT,     		/* Port number on which the MQTT broker is listening. Can be overridden by ALPN connection flag. */
-		(char*)anynet_sim_file_data[AN_THINGNAME].data,                        		/* Client Identifier of the MQTT client. It should be unique per broker. */
+		(uint8_t*)anynet_sim_file_data[AN_THINGNAME].data,                        		/* Client Identifier of the MQTT client. It should be unique per broker. */
         0,                                    		/* The length of the client Id, filled in later as not const. */
         pdFALSE,                              		/* Deprecated. */
         NULL,                                 		/* User data supplied to the callback. Can be NULL. */
@@ -286,7 +286,7 @@ static void prvPublishNextMessage( BaseType_t xMessageNumber )
     memset( &( xPublishParameters ), 0x00, sizeof( xPublishParameters ) );
 
     ( void ) snprintf( pub_buff, 128, "%s/%s", echoTOPIC_NAME, (char*)anynet_sim_file_data[AN_THINGNAME].data );
-    xPublishParameters.pucTopic = pub_buff;
+    xPublishParameters.pucTopic =  (uint8_t*)pub_buff;
     xPublishParameters.pvData = cDataBuffer;
     xPublishParameters.usTopicLength = ( uint16_t ) strlen( ( const char * ) xPublishParameters.pucTopic );
     xPublishParameters.ulDataLength = ( uint32_t ) strlen( cDataBuffer );
