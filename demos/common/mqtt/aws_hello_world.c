@@ -155,15 +155,15 @@ static void prvPublishNextMessage( BaseType_t xMessageNumber );
  * @return Indicates whether or not we take the ownership of the buffer containing
  * the MQTT message. We never take the ownership and always return eMQTTFalse.
  */
-static MQTTBool_t prvMQTTCallback( void * pvUserData,
-                                   const MQTTPublishData_t * const pxCallbackParams );
+//static MQTTBool_t prvMQTTCallback( void * pvUserData,
+//                                   const MQTTPublishData_t * const pxCallbackParams );
 
 /**
  * @brief Subscribes to the echoTOPIC_NAME topic.
  *
  * @return pdPASS if subscribe operation is successful, pdFALSE otherwise.
  */
-static BaseType_t prvSubscribe( void );
+//static BaseType_t prvSubscribe( void );
 
 /*-----------------------------------------------------------*/
 
@@ -310,7 +310,7 @@ static void prvPublishNextMessage( BaseType_t xMessageNumber )
     ( void ) xReturned;
 }
 /*-----------------------------------------------------------*/
-
+#if 0
 static void prvMessageEchoingTask( void * pvParameters )
 {
     MQTTAgentPublishParams_t xPublishParameters;
@@ -455,6 +455,7 @@ static MQTTBool_t prvMQTTCallback( void * pvUserData,
      * the agent and it is responsible for freeing the buffer. */
     return eMQTTFalse;
 }
+#endif
 /*-----------------------------------------------------------*/
 
 static void prvMQTTConnectAndPublishTask( void * pvParameters )
