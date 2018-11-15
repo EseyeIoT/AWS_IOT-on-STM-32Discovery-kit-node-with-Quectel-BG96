@@ -14,4 +14,4 @@
  * "...base64 data..."
  * "-----END CERTIFICATE-----";
  */
-static const char * clientcredentialJITR_DEVICE_CERTIFICATE_AUTHORITY_PEM = NULL;
+const char * clientcredentialJITR_DEVICE_CERTIFICATE_AUTHORITY_PEM = NULL;
