@@ -676,7 +676,7 @@ int32_t SOCKETS_Connect( Socket_t xSocket,
     	{
 			if( xSemaphoreTake( xCellularSemaphoreHandle, xSemaphoreWaitTicks ) == pdTRUE )
 			{
-				if(C2C_StartClientConnection(ulSocketNumber, 0, anynet_sim_file_data[AN_URLFULL].data, NULL, SOCKETS_ntohs( pxAddress->usPort ), 0) != 0)
+				if(C2C_StartClientConnection(ulSocketNumber, 0, (char*)anynet_sim_file_data[AN_URLFULL].data, NULL, SOCKETS_ntohs( pxAddress->usPort ), 0) != 0)
 				{
 					lRetVal = SOCKETS_SOCKET_ERROR;
 				}
@@ -728,7 +728,7 @@ int32_t SOCKETS_Connect( Socket_t xSocket,
         /* Setup TLS parameters. */
         xTLSParams.ulSize = sizeof( xTLSParams );
         xTLSParams.pcDestination = pxSecureSocket->pcDestination;
-        xTLSParams.pcServerCertificate = anynet_sim_file_data[AN_ROOTCA].data; //MCpxSecureSocket->pcServerCertificate;
+        xTLSParams.pcServerCertificate = (char*)anynet_sim_file_data[AN_ROOTCA].data; //MCpxSecureSocket->pcServerCertificate;
         xTLSParams.ulServerCertificateLength = anynet_sim_file_data[AN_ROOTCA].data_length; //MCpxSecureSocket->ulServerCertificateLength;
         xTLSParams.pvCallerContext = ( void * ) xSocket;
         xTLSParams.pxNetworkRecv = &( prvNetworkRecv );
