@@ -188,7 +188,7 @@ static BaseType_t prvCreateClientAndConnectToBroker( void )
 #ifdef USE_ESEYE
     MQTTAgentConnectParams_t xConnectParameters =
     {
-        clientcredentialMQTT_BROKER_ENDPOINT, 		/* The URL of the MQTT broker to connect to. */
+    	(char*)anynet_sim_file_data[AN_URLFULL].data, 		/* The URL of the MQTT broker to connect to. */
         democonfigMQTT_AGENT_CONNECT_FLAGS,   		/* Connection flags. */
         pdFALSE,                              		/* Deprecated. */
         clientcredentialMQTT_BROKER_PORT,     		/* Port number on which the MQTT broker is listening. Can be overridden by ALPN connection flag. */
@@ -234,7 +234,7 @@ static BaseType_t prvCreateClientAndConnectToBroker( void )
         xConnectParameters.usClientIdLength = ( uint16_t ) strlen( ( const char * ) echoCLIENT_ID );
 
         /* Connect to the broker. */
-        configPRINTF( ( "MQTT echo attempting to connect to %s.\r\n", clientcredentialMQTT_BROKER_ENDPOINT ) );
+        configPRINTF( ( "MQTT echo attempting to connect to %s.\r\n", (char*)anynet_sim_file_data[AN_URLFULL].data ) );
         xReturned = MQTT_AGENT_Connect( xMQTTHandle,
                                         &xConnectParameters,
                                         democonfigMQTT_ECHO_TLS_NEGOTIATION_TIMEOUT );
