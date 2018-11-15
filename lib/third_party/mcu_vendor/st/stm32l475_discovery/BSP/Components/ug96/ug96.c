@@ -603,7 +603,7 @@ UG96_InitRet_t  UG96_Init(Ug96Object_t *Obj)
   UG96_InitRet_t fret = UG96_INIT_OTHER_ERR;
   int32_t ret = RET_ERROR;
   int8_t i;
-  char *align_ptr, *token;
+  char *align_ptr;
   uint8_t parse_count;
   uint32_t tickstart;
 
@@ -895,71 +895,6 @@ UG96_NetworkRegistrationState_t  UG96_GetPsNetworkRegistrationStatus(Ug96Object_
 }
 
 /**
-  * @brief  Get the list of Network Operator available in the area
-  * @param  Obj: pointer to module handle
-  * @param  Operator: pointer to a string
-  * @retval Operation Status.
-  */
-//UG96_Return_t  UG96_ListOperators(Ug96Object_t *Obj, char *Operators)
-//{
-//  UG96_Return_t ret = UG96_RETURN_ERROR;
-//  char *align_ptr;
-//
-//  ret = (UG96_Return_t) AT_ExecuteCommand(Obj, UG96_TOUT_180000, (uint8_t *)"AT+COPS=?\r\n", RET_OK | RET_ERROR | RET_CME_ERROR);
-//  if (RET_OK == ret)
-//  {
-//    align_ptr = strstr((char *) Obj->CmdResp,"+COPS:") + sizeof("+COPS:");
-//    strncpy((char *)Operators,  align_ptr, 100);
-//  }
-//  return ret;
-//}
-
-/**
-  * @brief  Get current Network Operator (by string descriptor).
-  * @param  Obj: pointer to module handle
-  * @param  Operator: pointer to a string
-  * @param  bufsize: max string buffer length
-  * @retval Operation Status.
-  */
-//MC UG96_Return_t  UG96_GetCurrentOperator(Ug96Object_t *Obj, char *Operator, uint8_t Bufsize)
-//{
-//  UG96_Return_t ret = UG96_RETURN_ERROR;
-//  char *align_ptr;
-//  const char s[2] = ",";
-//  char *token;
-//  int i;
-//
-//  ret = (UG96_Return_t) AT_ExecuteCommand(Obj, UG96_TOUT_180000, (uint8_t *)"AT+COPS?\r\n", RET_OK | RET_ERROR | RET_CME_ERROR);
-//
-//  if (RET_OK == ret)
-//  {
-//    align_ptr = strstr((char *) Obj->CmdResp,"+COPS:") + sizeof("+COPS:");
-//
-//    strncpy((char *)Operator,  align_ptr, Bufsize);
-//
-//    /* get the first token */
-//    token = strtok(Operator, s);
-//
-//    /* walk through tokens until operator info */
-//    i = 0;
-//    while( token != NULL && i < 2) {
-//      token = strtok(NULL, s);
-//      i++;
-//    }
-//
-//    if (token != NULL)
-//    {
-//      strncpy((char *)(Operator), token, Bufsize);
-//    }
-//    else
-//    {
-//      ret = UG96_RETURN_ERROR;
-//    }
-//  }
-//  return ret;
-//}
-
-/**
   * @brief  Force registration to specific Network Operator (by operator code).
   * @param  Obj: pointer to module handle
   * @param  OperatorCode: http://www.imei.info/operator-codes/
@@ -1060,40 +995,6 @@ UG96_Return_t  UG96_GetUARTConfig(Ug96Object_t *Obj, UG96_UARTConfig_t *pconf)
   }
 
   return ret;
-}
-
-
-/**
-  * @brief  Return Manufacturer.
-  * @param  Obj: pointer to module handle
-  * @param  Manufacturer: pointer to Manufacturer
-  * @retval None.
-  */
-void  UG96_GetManufacturer( Ug96Object_t *Obj, uint8_t *Manufacturer)
-{
-//MC  strncpy((char *)Manufacturer, (char *)Obj->Manufacturer, UG96_MFC_SIZE);
-}
-
-/**
-  * @brief  Return Model.
-  * @param  Obj: pointer to module handle
-  * @param  Model: pointer to Model
-  * @retval None.
-  */
-void  UG96_GetProductID(Ug96Object_t *Obj, uint8_t *ProductID)
-{
-	//MC  strncpy((char *)ProductID, (char *)Obj->ProductID, UG96_PROD_ID_SIZE);
-}
-
-/**
-  * @brief  Return FW revision.
-  * @param  Obj: pointer to module handle
-  * @param  Model: pointer to FW revision
-  * @retval None.
-  */
-void  UG96_GetFWRevID(Ug96Object_t *Obj, uint8_t *Fw_ver)
-{
-	//MC  strncpy((char *)Fw_ver, (char *)Obj->FW_Rev, UG96_FW_REV_SIZE);
 }
 
 
@@ -1467,27 +1368,17 @@ UG96_Return_t  UG96_CloseClientConnection(Ug96Object_t *Obj, UG96_Conn_t *conn)
 UG96_SendRet_t  UG96_SendData(Ug96Object_t *Obj, uint8_t Socket, uint8_t *pdata, uint16_t Reqlen , uint16_t *SentLen , uint32_t Timeout)
 {
   UG96_SendRet_t ret = UG96_SEND_RET_CONN_ERR;
-  int32_t cmdret = 0;
 
   *SentLen = 0;
   if(Reqlen <= UG96_TX_DATABUF_SIZE )
   {
     snprintf(CmdString, 24, "AT+QISEND=%d,%d\r\n", Socket, Reqlen);
-    cmdret = AT_ExecuteCommand(Obj, Timeout,  (uint8_t *) CmdString, RET_ERROR | RET_ARROW);
-    //if(cmdret == RET_ARROW)
+    AT_ExecuteCommand(Obj, Timeout,  (uint8_t *) CmdString, RET_ERROR | RET_ARROW);
+    ret = AT_RequestSendData(Obj, pdata, Reqlen, Timeout);
+    if(ret == RET_SENT)
     {
-      ret = AT_RequestSendData(Obj, pdata, Reqlen, Timeout);
-      if(ret == RET_SENT)
-      {
-        *SentLen =  Reqlen;
-      }
+	  *SentLen =  Reqlen;
     }
-//    else
-//    {
-//#ifdef UG96_DBG
-//      configPRINTF(("AT_ExecuteCommand() failed: %ld\r\n", cmdret));
-//#endif
-//    }
   }
 #ifdef UG96_DBG
   if(ret == RET_SENT)
@@ -1595,7 +1486,7 @@ UG96_ReceiveRet_t  UG96_ReceiveData(Ug96Object_t *Obj, uint8_t Socket, uint8_t *
 #ifdef UG96_DBG
           configPRINTF(("UG96_ReceiveData() QIRD issue\r\n"));
 #endif
-          return UG96_RECEIVE_RET_INCOMPLETE; //MC UG96_RECEIVE_RET_COM_ERR;
+          return UG96_RECEIVE_RET_INCOMPLETE;
         }
         /* length parsing */
         AT_RetrieveData(Obj, Obj->CmdResp, 0, RET_CRLF, UG96_TOUT_300);
