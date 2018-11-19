@@ -81,7 +81,7 @@
 
 #include "eseye.h"
 struct anynet_file_details anynet_sim_file_data[5];
-
+extern volatile uint8_t data_published;
 #endif
 
 /**
@@ -143,7 +143,7 @@ static BaseType_t prvCreateClientAndConnectToBroker( void );
  *
  * @param[in] xMessageNumber Appended to the message to make it unique.
  */
-static void prvPublishNextMessage( BaseType_t xMessageNumber );
+static MQTTAgentReturnCode_t prvPublishNextMessage( BaseType_t xMessageNumber );
 
 /**
  * @brief The callback registered with the MQTT client to get notified when
@@ -258,7 +258,7 @@ static BaseType_t prvCreateClientAndConnectToBroker( void )
 static char pub_buff[128];
 static char cDataBuffer[ echoMAX_DATA_LENGTH ];
 
-static void prvPublishNextMessage( BaseType_t xMessageNumber )
+static MQTTAgentReturnCode_t prvPublishNextMessage( BaseType_t xMessageNumber )
 {
     MQTTAgentPublishParams_t xPublishParameters;
     MQTTAgentReturnCode_t xReturned;
@@ -306,8 +306,7 @@ static void prvPublishNextMessage( BaseType_t xMessageNumber )
         configPRINTF( ( "ERROR:  Echo failed to publish '%s'\r\n", cDataBuffer ) );
     }
 
-    /* Remove compiler warnings in case configPRINTF() is not defined. */
-    ( void ) xReturned;
+    return xReturned;
 }
 /*-----------------------------------------------------------*/
 #if 0
@@ -462,9 +461,10 @@ static void prvMQTTConnectAndPublishTask( void * pvParameters )
 {
     BaseType_t x, xReturned;
     const TickType_t xFiveSeconds = pdMS_TO_TICKS( 5000UL );
+    const TickType_t xFiveMinutes = pdMS_TO_TICKS( 300000UL );
     const BaseType_t xIterationsInAMinute = 60 / 5;
     TaskHandle_t xEchoingTask = NULL;
-
+    volatile uint8_t eseye_data_published = 0;
     /* Avoid compiler warnings about unused parameters. */
     ( void ) pvParameters;
 
@@ -474,36 +474,6 @@ static void prvMQTTConnectAndPublishTask( void * pvParameters )
     {
         configPRINTF( ( "MQTT echo test could not connect to broker.\r\n" ) );
     }
-//    if( xReturned == pdPASS )
-//    {
-//        /* Create the task that echoes data received in the callback back to the
-//         * MQTT broker. */
-//        xReturned = xTaskCreate( prvMessageEchoingTask,               /* The function that implements the task. */
-//                                 "Echoing",                           /* Human readable name for the task. */
-//                                 democonfigMQTT_ECHO_TASK_STACK_SIZE, /* Size of the stack to allocate for the task, in words not bytes! */
-//                                 NULL,                                /* The task parameter is not used. */
-//                                 tskIDLE_PRIORITY,                    /* Runs at the lowest priority. */
-//                                 &( xEchoingTask ) );                 /* The handle is stored so the created task can be deleted again at the end of the demo. */
-//
-//        if( xReturned != pdPASS )
-//        {
-//            /* The task could not be created because there was insufficient FreeRTOS
-//             * heap available to create the task's data structures and/or stack. */
-//            configPRINTF( ( "MQTT echoing task could not be created - out of heap space?\r\n" ) );
-//        }
-//    }
-//    else
-//    {
-//        configPRINTF( ( "MQTT echo test could not connect to broker.\r\n" ) );
-//    }
-//
-//    if( xReturned == pdPASS )
-//    {
-//        configPRINTF( ( "MQTT echo test echoing task created.\r\n" ) );
-//
-//        /* Subscribe to the echo topic. */
-//        xReturned = prvSubscribe();
-//    }
 
     if( xReturned == pdPASS )
     {
@@ -511,7 +481,12 @@ static void prvMQTTConnectAndPublishTask( void * pvParameters )
          * every five seconds until a minute has elapsed. */
         for( x = 0; x < xIterationsInAMinute; x++ )
         {
-            prvPublishNextMessage( x );
+        	// check we get successful publish
+            if(prvPublishNextMessage( x ) == eMQTTAgentSuccess)
+            {
+            	eseye_data_published = 1;
+            }
+
 
             /* Five seconds delay between publishes. */
             vTaskDelay( xFiveSeconds );
@@ -523,6 +498,13 @@ static void prvMQTTConnectAndPublishTask( void * pvParameters )
 
     /* End the demo by deleting all created resources. */
     configPRINTF( ( "MQTT Eseye Weather demo finished.\r\n" ) );
+    if(eseye_data_published == 0)
+    {
+    	configPRINTF(("Error detected publishing data, trying again in 5 minutes"));
+    	vTaskDelay(pdMS_TO_TICKS(xFiveMinutes));
+    	NVIC_SystemReset();
+    	vTaskDelay(pdMS_TO_TICKS(200));
+    }
     vMessageBufferDelete( xEchoMessageBuffer );
     vTaskDelete( xEchoingTask );
     vTaskDelete( NULL ); /* Delete this task. */
