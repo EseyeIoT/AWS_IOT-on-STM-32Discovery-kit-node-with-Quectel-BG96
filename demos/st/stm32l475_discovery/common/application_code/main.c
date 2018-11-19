@@ -79,7 +79,6 @@ typedef struct
 }RingBuffer_t;
 
 static void UART_C2C_MspInit(UART_HandleTypeDef *hUART_c2c);
-
 UART_HandleTypeDef huart4;
 RingBuffer_t UART_RxData;
 
@@ -139,9 +138,8 @@ int main( void )
 
 void vApplicationDaemonTaskStartupHook( void )
 {
-#ifdef USE_ESEYE
-		configPRINTF(("Eseye Anynet Weather demo\r\n"));
-	/* check modem status */
+	configPRINTF(("\r\nEseye Anynet Weather demo version %d.%d\r\n", MAJOR_VERSION, MINOR_VERSION));
+
 	C2C_HwStatusInit();
 
 	while(cellular_init() == -1)
@@ -149,22 +147,22 @@ void vApplicationDaemonTaskStartupHook( void )
 		configPRINTF(("Unable to register on cellular, retrying in 30 seconds\r\n"));
 		vTaskDelay(30000);
 	}
-#endif
-    /* A simple example to demonstrate key and certificate provisioning in
-     * microcontroller flash using PKCS#11 interface. This should be replaced
-     * by production ready key provisioning mechanism. */
-    vDevModeKeyProvisioning();
 
-    if( SYSTEM_Init() == pdPASS )
-    {
-        /* Connect to the WiFi before running the demos */
-    	if(use_cellular_socket == 0)
-    	{
-    		prvWifiConnect();
-    	}
+	/* A simple example to demonstrate key and certificate provisioning in
+	 * microcontroller flash using PKCS#11 interface. This should be replaced
+	 * by production ready key provisioning mechanism. */
+	vDevModeKeyProvisioning();
 
-        DEMO_RUNNER_RunDemos();
-    }
+	if( SYSTEM_Init() == pdPASS )
+	{
+		/* Connect to the WiFi before running the demos */
+		if(use_cellular_socket == 0)
+		{
+			prvWifiConnect();
+		}
+
+		DEMO_RUNNER_RunDemos();
+	}
 }
 
 /*-----------------------------------------------------------*/
