@@ -138,7 +138,7 @@ int main( void )
 
 void vApplicationDaemonTaskStartupHook( void )
 {
-	configPRINTF(("\r\nEseye Anynet Weather demo version %d.%d\r\n", MAJOR_VERSION, MINOR_VERSION));
+	configPRINTF(("\r\nEseye Anynet Weather Reinvent 2018 Demo, version %d.%d\r\n", MAJOR_VERSION, MINOR_VERSION));
 
 	C2C_HwStatusInit();
 
