@@ -78,18 +78,11 @@
 #include "aws_hello_world.h"
 
 #ifdef USE_ESEYE
-
 #include "eseye.h"
+#include "ug96.h"
 struct anynet_file_details anynet_sim_file_data[5];
-extern volatile uint8_t data_published;
+extern Ug96Object_t Ug96C2cObj; /* imei number */
 #endif
-
-/**
- * @brief MQTT client ID.
- *
- * It must be unique per MQTT broker.
- */
-#define echoCLIENT_ID          ( ( const uint8_t * ) "MQTTEcho" )
 
 /**
  * @brief The topic that the MQTT client both subscribes and publishes to.
@@ -185,38 +178,20 @@ static BaseType_t prvCreateClientAndConnectToBroker( void )
 {
     MQTTAgentReturnCode_t xReturned;
     BaseType_t xReturn = pdFAIL;
-#ifdef USE_ESEYE
     MQTTAgentConnectParams_t xConnectParameters =
     {
     	(char*)anynet_sim_file_data[AN_URLFULL].data, 		/* The URL of the MQTT broker to connect to. */
-        democonfigMQTT_AGENT_CONNECT_FLAGS,   		/* Connection flags. */
-        pdFALSE,                              		/* Deprecated. */
-        clientcredentialMQTT_BROKER_PORT,     		/* Port number on which the MQTT broker is listening. Can be overridden by ALPN connection flag. */
-		(uint8_t*)anynet_sim_file_data[AN_THINGNAME].data,                        		/* Client Identifier of the MQTT client. It should be unique per broker. */
-        0,                                    		/* The length of the client Id, filled in later as not const. */
-        pdFALSE,                              		/* Deprecated. */
-        NULL,                                 		/* User data supplied to the callback. Can be NULL. */
-        NULL,                                 		/* Callback used to report various events. Can be NULL. */
-		(char*)anynet_sim_file_data[AN_ROOTCA].data,/* Certificate used for secure connection. Can be NULL. */
-		anynet_sim_file_data[AN_ROOTCA].data_length /* Size of certificate used for secure connection. */
+        democonfigMQTT_AGENT_CONNECT_FLAGS,   				/* Connection flags. */
+        pdFALSE,                              				/* Deprecated. */
+        clientcredentialMQTT_BROKER_PORT,     				/* Port number on which the MQTT broker is listening. Can be overridden by ALPN connection flag. */
+		Ug96C2cObj.Imei,  									/* Client Identifier of the MQTT client. It should be unique per broker. */
+		0,     												/* The length of the client Id, filled in later as not const. */
+        pdFALSE,                              				/* Deprecated. */
+        NULL,                                 				/* User data supplied to the callback. Can be NULL. */
+        NULL,                                 				/* Callback used to report various events. Can be NULL. */
+		(char*)anynet_sim_file_data[AN_ROOTCA].data,		/* Certificate used for secure connection. Can be NULL. */
+		anynet_sim_file_data[AN_ROOTCA].data_length 		/* Size of certificate used for secure connection. */
     };
-#else
-    MQTTAgentConnectParams_t xConnectParameters =
-    {
-        clientcredentialMQTT_BROKER_ENDPOINT, /* The URL of the MQTT broker to connect to. */
-        democonfigMQTT_AGENT_CONNECT_FLAGS,   /* Connection flags. */
-        pdFALSE,                              /* Deprecated. */
-        clientcredentialMQTT_BROKER_PORT,     /* Port number on which the MQTT broker is listening. Can be overridden by ALPN connection flag. */
-        echoCLIENT_ID,                        /* Client Identifier of the MQTT client. It should be unique per broker. */
-        0,                                    /* The length of the client Id, filled in later as not const. */
-        pdFALSE,                              /* Deprecated. */
-        NULL,                                 /* User data supplied to the callback. Can be NULL. */
-        NULL,                                 /* Callback used to report various events. Can be NULL. */
-        NULL,                                 /* Certificate used for secure connection. Can be NULL. */
-        0                                     /* Size of certificate used for secure connection. */
-    };
-#endif
-
 
     /* Check this function has not already been executed. */
     configASSERT( xMQTTHandle == NULL );
@@ -231,7 +206,7 @@ static BaseType_t prvCreateClientAndConnectToBroker( void )
         /* Fill in the MQTTAgentConnectParams_t member that is not const,
          * and therefore could not be set in the initializer (where
          * xConnectParameters is declared in this function). */
-        xConnectParameters.usClientIdLength = ( uint16_t ) strlen( ( const char * ) echoCLIENT_ID );
+        xConnectParameters.usClientIdLength = ( uint16_t ) strlen((char*) Ug96C2cObj.Imei );
 
         /* Connect to the broker. */
         configPRINTF( ( "MQTT echo attempting to connect to %s.\r\n", (char*)anynet_sim_file_data[AN_URLFULL].data ) );
