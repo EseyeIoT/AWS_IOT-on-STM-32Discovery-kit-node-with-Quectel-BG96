@@ -408,6 +408,8 @@ C2C_RegiStatus_t C2C_Init(uint16_t registration_timeout_sec)
 	uint32_t tickcurrent;
 	uint32_t registration_timeout_msec = registration_timeout_sec*1000;
 
+	memset(Ug96C2cObj.Imei, 0, sizeof(Ug96C2cObj.Imei));
+
 	tickstart = xTaskGetTickCount();
 	UG96_RegisterTickCb(&Ug96C2cObj, xTaskGetTickCount);
 
