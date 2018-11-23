@@ -695,6 +695,13 @@ UG96_InitRet_t  UG96_Init(Ug96Object_t *Obj)
 		{
 			ret = UG96_INIT_OTHER_ERR;
 		}
+        /* Use AT+GSN to query the IMEI (International Mobile Equipment Identity) of module */
+        ret = AT_ExecuteCommand(Obj, UG96_TOUT_300, (uint8_t *)"AT+GSN\r\n", RET_OK | RET_ERROR);
+        if (ret == RET_OK)
+        {
+          align_ptr = strstr((char *) Obj->CmdResp,"\r\n") + 2;
+          strncpy((char *)Obj->Imei, align_ptr, UG96_IMEI_SIZE -1 );
+        }
 	}
     if(ret == RET_OK)
     {
