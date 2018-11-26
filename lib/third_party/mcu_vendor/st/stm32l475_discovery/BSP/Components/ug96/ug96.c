@@ -643,14 +643,6 @@ UG96_InitRet_t  UG96_Init(Ug96Object_t *Obj)
       ret = ret | AT_ExecuteCommand(Obj, UG96_TOUT_SHORT, (uint8_t *)"ATE0\r\n", RET_OK | RET_ERROR);
        /* Use AT+CMEE=1 to enable result code and use "integer" values */
       ret = ret | AT_ExecuteCommand(Obj, UG96_TOUT_300, (uint8_t *)"AT+CMEE=1\r\n", RET_OK | RET_ERROR);
-
-      //ret = ret | AT_ExecuteCommand(Obj, UG96_TOUT_300, (uint8_t *)" AT+STKENV=\"D1288202838106068186825347168B1A040C914437989699097FF681106251250000072A30312A303323\"\r\n", RET_OK | RET_ERROR);
-
-      /* Use AT+QCFG to enable/disable URC on port UART1 */
-#ifndef USE_BG96
-      ret = ret | AT_ExecuteCommand(Obj, UG96_TOUT_300, (uint8_t *)"AT+QCFG=\"URC/PORT\",1,\"uart1\"\r\n", RET_OK | RET_ERROR);
-      ret = ret | AT_ExecuteCommand(Obj, UG96_TOUT_300, (uint8_t *)"AT+QCFG=\"nwscanseq\",010203,1\r\n", RET_OK | RET_ERROR);
-#endif
     }
 
     /* retrieve SIM info */
