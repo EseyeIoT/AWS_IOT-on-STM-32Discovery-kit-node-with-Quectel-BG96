@@ -308,6 +308,7 @@ UG96_Return_t UG96_PowerDown(Ug96Object_t *Obj);
 UG96_Return_t  UG96_GetSignalQualityStatus(Ug96Object_t *Obj, int32_t *Qvalue);
 UG96_Return_t  UG96_PSAttach(Ug96Object_t *Obj);
 UG96_Return_t  UG96_AutomaticPlmnSelection(Ug96Object_t *Obj);
+UG96_Return_t  UG96_NetworkSearch(Ug96Object_t *Obj);
 UG96_Return_t  UG96_SetFullFunctionality(Ug96Object_t *Obj);
 UG96_NetworkRegistrationState_t  UG96_GetCsNetworkRegistrationStatus(Ug96Object_t *Obj);
 UG96_NetworkRegistrationState_t  UG96_GetPsNetworkRegistrationStatus(Ug96Object_t *Obj);

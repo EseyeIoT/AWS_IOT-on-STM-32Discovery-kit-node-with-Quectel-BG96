@@ -806,6 +806,22 @@ UG96_Return_t  UG96_AutomaticPlmnSelection(Ug96Object_t *Obj)
   return ret;
 }
 
+UG96_Return_t  UG96_NetworkSearch(Ug96Object_t *Obj)
+{
+  UG96_Return_t ret;
+
+  if (RET_OK != AT_ExecuteCommand(Obj, UG96_TOUT_180000, (uint8_t *)"AT+COPS=\r\n", RET_OK | RET_ERROR | RET_CME_ERROR) )
+  {
+    AT_RetrieveData(Obj, Obj->CmdResp, 0, RET_CRLF, UG96_TOUT_180000);
+    ret = UG96_RETURN_ERROR;
+  }
+  else
+  {
+    ret = UG96_RETURN_OK;
+  }
+  return ret;
+}
+
 UG96_Return_t  UG96_SetFullFunctionality(Ug96Object_t *Obj)
 {
   UG96_Return_t ret;
@@ -1248,7 +1264,7 @@ UG96_Return_t  UG96_DNS_LookUp(Ug96Object_t *Obj, uint8_t ContextID, const char 
 UG96_Return_t  UG96_OpenClientConnection(Ug96Object_t *Obj, uint8_t ContextID, UG96_Conn_t *conn)
 {
   UG96_Return_t ret = UG96_RETURN_ERROR;
-  char  type_string[12];
+  char  type_string[13];
   int16_t recv;
   int32_t cmdret, retr_errcode;
 
