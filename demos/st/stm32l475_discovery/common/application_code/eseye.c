@@ -12,8 +12,6 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#define NETWORK_SCAN_RUN	0	// Change to 1 to enable
-
 #define C2C_CONTEXT_1   1
 #define  CELL_CONNECT_MAX_ATTEMPT_COUNT  6
 

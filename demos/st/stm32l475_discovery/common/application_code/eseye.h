@@ -12,8 +12,15 @@
 #include "stm32l475e_iot01_psensor.h"
 #include "stm32l475e_iot01_tsensor.h"
 
+#define NETWORK_SCAN_RUN	0	// Change to 1 to enable
+
+#if NETWORK_SCAN_RUN
+#define MAJOR_VERSION 99
+#define MINOR_VERSION 1
+#else
 #define MAJOR_VERSION 1
 #define MINOR_VERSION 7
+#endif
 
 enum SIM_FILES_STATE {
 	AN_SIM_INCOMPLETE = 0,
