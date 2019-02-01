@@ -696,17 +696,15 @@ UG96_InitRet_t  UG96_Init(Ug96Object_t *Obj)
         }
         /* Use AT+QCCID to query the ICCID of the SIM  */
         ret = AT_ExecuteCommand(Obj, UG96_TOUT_300, (uint8_t *)"AT+QCCID\r\n", RET_OK | RET_ERROR);
-        if (ret == RET_OK)
+        if (RET_OK != ret)
         {
-          align_ptr = strstr((char *) Obj->CmdResp,"\r\n") + 2;
-          strncpy((char *)Obj->Imei, align_ptr, UG96_ICCID_SIZE -1 );
+        	ret = UG96_INIT_OTHER_ERR;
         }
         /* Use AT+CIMI to query the IMSI (International Mobile Subscriber Identity) of SIM */
-        ret = AT_ExecuteCommand(Obj, UG96_TOUT_300, (uint8_t *)"AT+CIMI\r\n", RET_OK | RET_ERROR);
-        if (ret == RET_OK)
+        ret = AT_ExecuteCommand(Obj, UG96_TOUT_300, (uint8_t *)"AT+CIMI\r\n", RET_OK | RET_ERROR | RET_CME_ERROR);
+        if (RET_OK != ret)
         {
-          align_ptr = strstr((char *) Obj->CmdResp,"\r\n") + 2;
-          strncpy((char *)Obj->Imei, align_ptr, UG96_IMSI_SIZE -1 );
+        	ret = UG96_INIT_OTHER_ERR;
         }
 
 	}
