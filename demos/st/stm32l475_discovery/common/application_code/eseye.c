@@ -12,6 +12,8 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+#define NETWORK_SCAN_RUN	1	// Change to 1 to enable
+
 #define C2C_CONTEXT_1   1
 #define  CELL_CONNECT_MAX_ATTEMPT_COUNT  6
 
@@ -426,6 +428,19 @@ C2C_RegiStatus_t C2C_Init(uint16_t registration_timeout_sec)
 
 		if(init_status == UG96_INIT_RET_OK)
 		{
+#if NETWORK_SCAN_RUN
+/* This will search the available networks and print on console */
+			/* Wait 2s before running this command */
+			vTaskDelay(pdMS_TO_TICKS(2000));
+			while (1) {
+				if (UG96_RETURN_OK != UG96_NetworkSearch(&Ug96C2cObj)) {
+					configPRINTF(("Network scan failed, waiting 60s then running again\r\n"));
+				} else {
+					configPRINTF(("Scan Successful, you can unplug or wait 60s for scan repeat\r\n"));
+				}
+				vTaskDelay(pdMS_TO_TICKS(60000));
+			}
+#endif
 			got_certs = AN_SIM_INCOMPLETE;
 
 			tickcurrent = xTaskGetTickCount() - tickstart;

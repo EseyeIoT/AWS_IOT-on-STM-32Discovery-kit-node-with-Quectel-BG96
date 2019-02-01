@@ -13,7 +13,7 @@
 #include "stm32l475e_iot01_tsensor.h"
 
 #define MAJOR_VERSION 1
-#define MINOR_VERSION 6
+#define MINOR_VERSION 7
 
 enum SIM_FILES_STATE {
 	AN_SIM_INCOMPLETE = 0,
