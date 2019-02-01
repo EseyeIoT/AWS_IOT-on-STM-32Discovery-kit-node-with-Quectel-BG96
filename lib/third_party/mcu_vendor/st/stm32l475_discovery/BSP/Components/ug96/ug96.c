@@ -67,7 +67,7 @@
 #define CTRL_Z 26
 
 #define UG96_DBG
-#define UG96_DEEP_DBG
+// #define UG96_DEEP_DBG
 #define UG96_DBG_AT
 
 
