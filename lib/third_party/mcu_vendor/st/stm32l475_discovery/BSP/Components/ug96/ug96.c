@@ -687,7 +687,7 @@ UG96_InitRet_t  UG96_Init(Ug96Object_t *Obj)
         {
         	ret = UG96_INIT_OTHER_ERR;
         }
-        /* Use AT+CGMM to quert the model id  */
+        /* Use AT+CGMM to query the model id  */
         ret = AT_ExecuteCommand(Obj, UG96_TOUT_300, (uint8_t *)"AT+CGMM\r\n", RET_OK | RET_ERROR);
         if (RET_OK != ret)
         {
@@ -754,7 +754,7 @@ UG96_InitRet_t  UG96_Init(Ug96Object_t *Obj)
 #else
     if(ret == RET_OK)
     {
-    	ret = AT_ExecuteCommand(Obj, UG96_TOUT_15000, (uint8_t *)"AT+QCFG=\"nwscanseq\",020103,1\r\n", RET_OK | RET_ERROR | RET_CME_ERROR);
+    	ret = AT_ExecuteCommand(Obj, UG96_TOUT_15000, (uint8_t *)"AT+QCFG=\"nwscanseq\",0201,1\r\n", RET_OK | RET_ERROR | RET_CME_ERROR);
     	if (RET_OK != ret)
     	{
     		ret = UG96_INIT_OTHER_ERR;
