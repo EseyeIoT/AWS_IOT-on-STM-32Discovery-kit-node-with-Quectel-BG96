@@ -203,7 +203,7 @@ int cellular_init(void)
 		if(ret != C2C_RET_OK)
 		{
 			/*  we've already tried both or ret is OK, so let's quit */
-			break;
+			//break;
 		}
 	}
 
