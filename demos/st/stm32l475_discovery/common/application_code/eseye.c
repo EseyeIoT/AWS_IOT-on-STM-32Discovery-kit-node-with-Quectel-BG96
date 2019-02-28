@@ -214,7 +214,7 @@ int cellular_init(void)
 	{
 		/* Connect to the specified APN. */
 		ret = C2C_ConfigureAP(1, ap_code, username, password, UG96_AUTHENT_CHAP);
-		configPRINTF(("\rConnecting to AP: be patient ...\n"));
+		configPRINTF(("\rConnecting to AP: be patient ...\r\n"));
 
 		do
 		{

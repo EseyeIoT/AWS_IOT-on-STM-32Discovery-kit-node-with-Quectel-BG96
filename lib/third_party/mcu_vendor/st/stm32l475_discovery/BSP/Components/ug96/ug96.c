@@ -1164,6 +1164,8 @@ UG96_Return_t  UG96_Activate(Ug96Object_t *Obj, uint8_t ContextID)
       {
          Obj->APContextState[ContextID-1] = UG96_AP_ACVTIVATED;
          Obj->APsActive++;
+         /* PN Print out the IP addresses for the contexts */
+         AT_ExecuteCommand(Obj, UG96_TOUT_40000, (uint8_t *)"AT+QIACT?\r\n", RET_OK | RET_ERROR);
       }
     }
   }
