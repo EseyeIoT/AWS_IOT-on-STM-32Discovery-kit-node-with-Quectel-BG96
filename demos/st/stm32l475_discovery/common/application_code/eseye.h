@@ -13,13 +13,14 @@
 #include "stm32l475e_iot01_tsensor.h"
 
 #define NETWORK_SCAN_RUN	0	// Change to 1 to enable
+#define ONLY_2G 			1	// Change to 1 to set 2G only operation
 
 #if NETWORK_SCAN_RUN
 #define MAJOR_VERSION 99
 #define MINOR_VERSION 1
 #else
 #define MAJOR_VERSION 1
-#define MINOR_VERSION 7
+#define MINOR_VERSION 8
 #endif
 
 enum SIM_FILES_STATE {

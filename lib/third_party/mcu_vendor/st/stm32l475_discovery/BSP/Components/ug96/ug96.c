@@ -678,15 +678,9 @@ UG96_InitRet_t  UG96_Init(Ug96Object_t *Obj)
       }
     }
 #ifdef USE_BG96
-
-    /* MC the next three commands set the correct band */
+    /* PN The next 3 commands read off some useful info from the SIM and device */
     if(ret == RET_OK)
 	{
-		ret = AT_ExecuteCommand(Obj, UG96_TOUT_15000, (uint8_t *)"AT+QCFG=\"roamservice\",2,1\r\n", RET_OK | RET_ERROR | RET_CME_ERROR);
-		if (RET_OK != ret)
-		{
-			ret = UG96_INIT_OTHER_ERR;
-		}
         /* Use AT+GSN to query the IMEI (International Mobile Equipment Identity) of module */
         ret = AT_ExecuteCommand(Obj, UG96_TOUT_300, (uint8_t *)"AT+GSN\r\n", RET_OK | RET_ERROR);
         if (ret == RET_OK)
@@ -706,11 +700,46 @@ UG96_InitRet_t  UG96_Init(Ug96Object_t *Obj)
         {
         	ret = UG96_INIT_OTHER_ERR;
         }
-
 	}
+
+    /* PN the next commands set up the band and search modes for CatM and GSM  */
+    if(ret == RET_OK)
+    {
+    	ret = AT_ExecuteCommand(Obj, UG96_TOUT_15000, (uint8_t *)"AT+QCFG=\"band\",0000000F,400A0E189F,A0E189F,1\r\n", RET_OK | RET_ERROR | RET_CME_ERROR);
+    	if (RET_OK != ret)
+    	{
+    		ret = UG96_INIT_OTHER_ERR;
+    	}
+    }
+#if ONLY_2G
+    if(ret == RET_OK)
+    {
+    	ret = AT_ExecuteCommand(Obj, UG96_TOUT_15000, (uint8_t *)"AT+QCFG=\"nwscanseq\",01,1\r\n", RET_OK | RET_ERROR | RET_CME_ERROR);
+    	if (RET_OK != ret)
+    	{
+    		ret = UG96_INIT_OTHER_ERR;
+    	}
+    }
+    if(ret == RET_OK)
+    {
+    	ret = AT_ExecuteCommand(Obj, UG96_TOUT_15000, (uint8_t *)"AT+QCFG=\"nwscanmode\",1,1\r\n", RET_OK | RET_ERROR | RET_CME_ERROR);
+    	if (RET_OK != ret)
+    	{
+    		ret = UG96_INIT_OTHER_ERR;
+    	}
+    }
+#else
     if(ret == RET_OK)
     {
     	ret = AT_ExecuteCommand(Obj, UG96_TOUT_15000, (uint8_t *)"AT+QCFG=\"nwscanseq\",020103,1\r\n", RET_OK | RET_ERROR | RET_CME_ERROR);
+    	if (RET_OK != ret)
+    	{
+    		ret = UG96_INIT_OTHER_ERR;
+    	}
+    }
+    if(ret == RET_OK)
+    {
+    	ret = AT_ExecuteCommand(Obj, UG96_TOUT_15000, (uint8_t *)"AT+QCFG=\"iotopmode\",0,1\r\n", RET_OK | RET_ERROR | RET_CME_ERROR);
     	if (RET_OK != ret)
     	{
     		ret = UG96_INIT_OTHER_ERR;
@@ -724,14 +753,17 @@ UG96_InitRet_t  UG96_Init(Ug96Object_t *Obj)
     		ret = UG96_INIT_OTHER_ERR;
     	}
     }
+
+#endif
     if(ret == RET_OK)
-    {
-    	ret = AT_ExecuteCommand(Obj, UG96_TOUT_15000, (uint8_t *)"AT+QCFG=\"band\", 0f, 400A0E189F, A0E189F, 1\r\n", RET_OK | RET_ERROR | RET_CME_ERROR);
-    	if (RET_OK != ret)
-    	{
-    		ret = UG96_INIT_OTHER_ERR;
-    	}
-    }
+	{
+    	ret = AT_ExecuteCommand(Obj, UG96_TOUT_15000, (uint8_t *)"AT+QCFG=\"roamservice\",2,1\r\n", RET_OK | RET_ERROR | RET_CME_ERROR);
+		if (RET_OK != ret)
+		{
+			ret = UG96_INIT_OTHER_ERR;
+		}
+
+	}
     /* Set the radio ON with the full functionality in the modem */
     ret = AT_ExecuteCommand(Obj, UG96_TOUT_15000, (uint8_t *)"AT+CFUN=1\r\n", RET_OK | RET_ERROR | RET_CME_ERROR);
     if (RET_OK != ret)
@@ -882,7 +914,8 @@ UG96_NetworkRegistrationState_t  UG96_GetCsNetworkRegistrationStatus(Ug96Object_
 					val = atoi((char *)received_string);
 					ret = (UG96_NetworkRegistrationState_t) val;
 				}
-				vTaskDelay(pdMS_TO_TICKS(1000));
+				/* PN Since we are sitting in this loop until registration, reduce the check to every 5s from the default 1s */
+				vTaskDelay(pdMS_TO_TICKS(5000));
 			}
 		}
 	}

@@ -153,6 +153,9 @@ int cellular_init(void)
 	C2C_RegiStatus_t reg_status = C2C_REGISTATUS_UNKNOWN;
 	uint8_t c2cConnectCounter = 0;
 
+#if ONLY_2G
+	configPRINTF(("*** Firmware for 2G only ***\r\n"));
+#endif
 	configPRINTF(("*** Eseye Anynet Secure connection ***\r\n"));
 
 	if(InitSensors() != 1)
@@ -441,11 +444,34 @@ C2C_RegiStatus_t C2C_Init(uint16_t registration_timeout_sec)
 #endif
 			got_certs = AN_SIM_INCOMPLETE;
 
+/* PN add CS registration check first */
+			tickcurrent = xTaskGetTickCount() - tickstart;
+			while((tickcurrent <  registration_timeout_msec) || (registration_timeout_sec == C2C_MAX_DELAY))
+			{
+				/* Check Circuit Switched Registration */
+				configPRINTF(("Attempting to register on circuit switched mobile network\r\n"));
+				ret = (C2C_RegiStatus_t) UG96_GetCsNetworkRegistrationStatus(&Ug96C2cObj);
+				if ((ret == C2C_REGISTATUS_HOME_NETWORK) || (ret == C2C_REGISTATUS_ROAMING))
+				{
+					tickcurrent = xTaskGetTickCount() - tickstart;
+					configPRINTF(("Registration done in %lu milliseconds\r\n", tickcurrent));
+					/* registered step 1 now bail out */
+					break;
+				}
+				else
+				{
+					/* PN wait 5s here */
+					vTaskDelay(pdMS_TO_TICKS(5000));
+				}
+				tickcurrent = xTaskGetTickCount() - tickstart;
+			}
+
+/* PN end */
 			tickcurrent = xTaskGetTickCount() - tickstart;
 			while((tickcurrent <  registration_timeout_msec) || (registration_timeout_sec == C2C_MAX_DELAY))
 			{
 				/* Check Packet Switched Registration */
-				configPRINTF(("Attempting to register on mobile network\r\n"));
+				configPRINTF(("Attempting to register on packet switched mobile network\r\n"));
 				ret = (C2C_RegiStatus_t) UG96_GetPsNetworkRegistrationStatus(&Ug96C2cObj);
 				if ((ret == C2C_REGISTATUS_HOME_NETWORK) || (ret == C2C_REGISTATUS_ROAMING))
 				{
