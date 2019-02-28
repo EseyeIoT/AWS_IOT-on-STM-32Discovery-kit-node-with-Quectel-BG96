@@ -710,7 +710,7 @@ UG96_InitRet_t  UG96_Init(Ug96Object_t *Obj)
 	}
     if(ret == RET_OK)
     {
-    	ret = AT_ExecuteCommand(Obj, UG96_TOUT_15000, (uint8_t *)"AT+QCFG=\"nwscanseq\",020103,1\r\n", RET_OK | RET_ERROR | RET_CME_ERROR);
+    	ret = AT_ExecuteCommand(Obj, UG96_TOUT_15000, (uint8_t *)"AT+QCFG=\"nwscanseq\",010203,1\r\n", RET_OK | RET_ERROR | RET_CME_ERROR);
     	if (RET_OK != ret)
     	{
     		ret = UG96_INIT_OTHER_ERR;
@@ -901,23 +901,50 @@ UG96_NetworkRegistrationState_t  UG96_GetPsNetworkRegistrationStatus(Ug96Object_
   UG96_NetworkRegistrationState_t ret = UG96_NRS_ERROR;
   char *align_ptr;
   char *cgreg_ptr;
+  static uint8_t cg = 1;
 
   if (Obj->SimInfo.SimStatus == UG96_SIM_READY)
   {
-    if (RET_OK == AT_ExecuteCommand(Obj, UG96_TOUT_300, (uint8_t *)"AT+CGREG?\r\n", RET_OK | RET_ERROR | RET_CME_ERROR))
-    {
-      cgreg_ptr = strstr((char *) Obj->CmdResp,"+CGREG:");
 
-      /* +CGREG: is in the response*/
-      if (NULL != cgreg_ptr)
-      {
-        align_ptr = cgreg_ptr + sizeof("+CGREG:");
-        strncpy((char *)received_string,  align_ptr+2, 1);
-        strncpy((char *)received_string+1,  "\r\n", 2);
-        val = atoi((char *)received_string);
-        ret = (UG96_NetworkRegistrationState_t) val;
-      }
-    }
+	if(cg == 1)
+	{
+		if (RET_OK == AT_ExecuteCommand(Obj, UG96_TOUT_300, (uint8_t *)"AT+CGREG?\r\n", RET_OK | RET_ERROR | RET_CME_ERROR))
+		{
+		  cgreg_ptr = strstr((char *) Obj->CmdResp,"+CGREG:");
+
+		  /* +CGREG: is in the response*/
+		  if (NULL != cgreg_ptr)
+		  {
+			align_ptr = cgreg_ptr + sizeof("+CGREG:");
+			strncpy((char *)received_string,  align_ptr+2, 1);
+			strncpy((char *)received_string+1,  "\r\n", 2);
+			val = atoi((char *)received_string);
+			ret = (UG96_NetworkRegistrationState_t) val;
+		  }
+		}
+
+		cg = 0;
+	}
+	else
+	{
+		if (RET_OK == AT_ExecuteCommand(Obj, UG96_TOUT_300, (uint8_t *)"AT+CEREG?\r\n", RET_OK | RET_ERROR | RET_CME_ERROR))
+		{
+		  cgreg_ptr = strstr((char *) Obj->CmdResp,"+CEREG:");
+
+		  /* +CGREG: is in the response*/
+		  if (NULL != cgreg_ptr)
+		  {
+			align_ptr = cgreg_ptr + sizeof("+CEREG:");
+			strncpy((char *)received_string,  align_ptr+2, 1);
+			strncpy((char *)received_string+1,  "\r\n", 2);
+			val = atoi((char *)received_string);
+			ret = (UG96_NetworkRegistrationState_t) val;
+		  }
+		}
+
+		cg = 1;
+	}
+
   }
   return ret;
 }
