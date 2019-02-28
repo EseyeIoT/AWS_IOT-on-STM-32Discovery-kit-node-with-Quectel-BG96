@@ -631,18 +631,18 @@ UG96_InitRet_t  UG96_Init(Ug96Object_t *Obj)
     }
     else
     {
-      /* Retrieve Quectel Factory Default values */
-      ret = UG96_ResetToFactoryDefault(Obj);
-      /* Retrieve Quectel UART baud rate and flow control*/
-      /* If not aligned to the UART of MCU (_io.h), already previous AT command will fail */
-      ret = ret | UG96_GetUARTConfig(Obj, &Obj->UART_Config);
+    	/* Retrieve Quectel Factory Default values */
+    	ret = UG96_ResetToFactoryDefault(Obj);
+    	/* Retrieve Quectel UART baud rate and flow control*/
+    	/* If not aligned to the UART of MCU (_io.h), already previous AT command will fail */
+    	ret = ret | UG96_GetUARTConfig(Obj, &Obj->UART_Config);
 
-      /* Use ATV1 to set the response format */
-      ret = ret | AT_ExecuteCommand(Obj, UG96_TOUT_SHORT, (uint8_t *)"ATV1\r\n", RET_OK | RET_ERROR);
-      /* Use ATE1 to enable or  ATE0 to disable echo mode */
-      ret = ret | AT_ExecuteCommand(Obj, UG96_TOUT_SHORT, (uint8_t *)"ATE0\r\n", RET_OK | RET_ERROR);
-       /* Use AT+CMEE=1 to enable result code and use "integer" values */
-      ret = ret | AT_ExecuteCommand(Obj, UG96_TOUT_300, (uint8_t *)"AT+CMEE=1\r\n", RET_OK | RET_ERROR);
+    	/* Use ATV1 to set the response format */
+    	ret = ret | AT_ExecuteCommand(Obj, UG96_TOUT_SHORT, (uint8_t *)"ATV1\r\n", RET_OK | RET_ERROR);
+    	/* Use ATE1 to enable or  ATE0 to disable echo mode */
+    	ret = ret | AT_ExecuteCommand(Obj, UG96_TOUT_SHORT, (uint8_t *)"ATE0\r\n", RET_OK | RET_ERROR);
+    	/* Use AT+CMEE=1 to enable result code and use "integer" values */
+    	ret = ret | AT_ExecuteCommand(Obj, UG96_TOUT_300, (uint8_t *)"AT+CMEE=1\r\n", RET_OK | RET_ERROR);
     }
 
     /* retrieve SIM info */
