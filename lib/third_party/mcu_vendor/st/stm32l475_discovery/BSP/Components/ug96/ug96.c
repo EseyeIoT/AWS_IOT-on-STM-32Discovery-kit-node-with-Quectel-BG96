@@ -678,6 +678,29 @@ UG96_InitRet_t  UG96_Init(Ug96Object_t *Obj)
       }
     }
 #ifdef USE_BG96
+    /* PN The next 3 commands read off some useful info from the module */
+    if(ret == RET_OK)
+	{
+        /* Use AT+CGMI to query the manufacturer of module */
+        ret = AT_ExecuteCommand(Obj, UG96_TOUT_300, (uint8_t *)"AT+CGMI\r\n", RET_OK | RET_ERROR);
+        if (RET_OK != ret)
+        {
+        	ret = UG96_INIT_OTHER_ERR;
+        }
+        /* Use AT+CGMM to quert the model id  */
+        ret = AT_ExecuteCommand(Obj, UG96_TOUT_300, (uint8_t *)"AT+CGMM\r\n", RET_OK | RET_ERROR);
+        if (RET_OK != ret)
+        {
+        	ret = UG96_INIT_OTHER_ERR;
+        }
+        /* Use AT+CGMR to query the TA rev id of software release  */
+        ret = AT_ExecuteCommand(Obj, UG96_TOUT_300, (uint8_t *)"AT+CGMR\r\n", RET_OK | RET_ERROR);
+        if (RET_OK != ret)
+        {
+        	ret = UG96_INIT_OTHER_ERR;
+        }
+	}
+
     /* PN The next 3 commands read off some useful info from the SIM and device */
     if(ret == RET_OK)
 	{
