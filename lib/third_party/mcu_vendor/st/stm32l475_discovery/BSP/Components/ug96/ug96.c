@@ -787,12 +787,33 @@ UG96_InitRet_t  UG96_Init(Ug96Object_t *Obj)
 		}
 
 	}
+
     /* Set the radio ON with the full functionality in the modem */
-    ret = AT_ExecuteCommand(Obj, UG96_TOUT_15000, (uint8_t *)"AT+CFUN=1\r\n", RET_OK | RET_ERROR | RET_CME_ERROR);
+    /* PN Set to full function and reset based on feedback from Quectel */
+    ret = AT_ExecuteCommand(Obj, UG96_TOUT_15000, (uint8_t *)"AT+CFUN=1,1\r\n", RET_OK | RET_ERROR | RET_CME_ERROR);
     if (RET_OK != ret)
     {
       fret = UG96_INIT_OTHER_ERR;
     }
+
+/* PN Sit and read the AT responses until we are RDY to go again */
+    do {
+    	if ( AT_RetrieveData(Obj, Obj->CmdResp, 0, RET_CRLF, UG96_TOUT_15000) )
+    	{
+    		align_ptr = strstr((char *) Obj->CmdResp,"RDY");
+    		if (NULL != align_ptr)
+    		{
+    			configPRINTF(("AT response: %s\r\n", Obj->CmdResp));
+    			ret = RET_OK;
+    		}
+    		else
+    		{
+    			ret = RET_NONE;
+    		}
+    	}
+    }
+    while (ret != RET_OK);
+
     ret = AT_ExecuteCommand(Obj, UG96_TOUT_15000, (uint8_t *)"AT+CREG=1\r\n", RET_OK | RET_ERROR | RET_CME_ERROR);
 	if (RET_OK != ret)
 	{
