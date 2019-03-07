@@ -231,7 +231,7 @@ int cellular_init(void)
 				vTaskDelay(pdMS_TO_TICKS(10000));
 			}
 		}
-		while (c2cConnectCounter < CELL_CONNECT_MAX_ATTEMPT_COUNT);
+		while (1);//c2cConnectCounter < CELL_CONNECT_MAX_ATTEMPT_COUNT);
 
 		//BSP_LED_Off(LED_GREEN);
 		if (ret == C2C_RET_OK)
