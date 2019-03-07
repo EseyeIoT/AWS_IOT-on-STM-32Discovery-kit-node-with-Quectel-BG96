@@ -222,12 +222,11 @@ int cellular_init(void)
 			c2cConnectCounter++;
 			if (ret == C2C_RET_OK)
 			{
-				c2cConnectCounter = CELL_CONNECT_MAX_ATTEMPT_COUNT;
 				break;
 			}
 			else
 			{
-				configPRINTF(("Connection try %d of %d failed\r\n", c2cConnectCounter, CELL_CONNECT_MAX_ATTEMPT_COUNT));
+				configPRINTF(("Connection try %d failed\r\n", c2cConnectCounter));
 				vTaskDelay(pdMS_TO_TICKS(10000));
 			}
 		}
