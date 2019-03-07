@@ -172,6 +172,7 @@ static MessageBufferHandle_t xEchoMessageBuffer = NULL;
  */
 static MQTTAgentHandle_t xMQTTHandle = NULL;
 
+uint8_t closedown = 0;
 /*-----------------------------------------------------------*/
 
 static BaseType_t prvCreateClientAndConnectToBroker( void )
@@ -435,6 +436,7 @@ static MQTTBool_t prvMQTTCallback( void * pvUserData,
 static void prvMQTTConnectAndPublishTask( void * pvParameters )
 {
     BaseType_t x, xReturned;
+    const TickType_t xSixtySeconds = pdMS_TO_TICKS( 60000UL );
     const TickType_t xFiveSeconds = pdMS_TO_TICKS( 5000UL );
     const TickType_t xFiveMinutes = pdMS_TO_TICKS( 300000UL );
     const BaseType_t xIterationsInAMinute = 60 / 5;
@@ -454,8 +456,14 @@ static void prvMQTTConnectAndPublishTask( void * pvParameters )
     {
         /* MQTT client is now connected to a broker.  Publish a message
          * every five seconds until a minute has elapsed. */
-        for( x = 0; x < xIterationsInAMinute; x++ )
+        x = 0;
+        while(1)
         {
+        	if (closedown == 1)
+        	{
+        		break;
+        	}
+
         	// check we get successful publish
             if(prvPublishNextMessage( x ) == eMQTTAgentSuccess)
             {
@@ -464,7 +472,7 @@ static void prvMQTTConnectAndPublishTask( void * pvParameters )
 
 
             /* Five seconds delay between publishes. */
-            vTaskDelay( xFiveSeconds );
+            vTaskDelay( xSixtySeconds );
         }
     }
 
