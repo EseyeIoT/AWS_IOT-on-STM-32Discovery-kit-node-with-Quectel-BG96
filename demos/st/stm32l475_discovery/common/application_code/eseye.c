@@ -212,7 +212,7 @@ int cellular_init(void)
 	{
 		/* Connect to the specified APN. */
 		ret = C2C_ConfigureAP(1, ap_code, username, password, UG96_AUTHENT_CHAP);
-		configPRINTF(("\rConnecting to AP: be patient ...\n"));
+		configPRINTF(("\rConnecting to AP: be patient ...\r\n"));
 
 		do
 		{
@@ -454,6 +454,8 @@ C2C_RegiStatus_t C2C_Init(uint16_t registration_timeout_sec)
 				{
 					tickcurrent = xTaskGetTickCount() - tickstart;
 					configPRINTF(("Registration done in %lu msseconds\r\n", tickcurrent));
+					/* PN Check which network operator */
+					UG96_NetworkDisplay(&Ug96C2cObj);
 					/* check signal */
 					if(UG96_GetSignalQualityStatus(&Ug96C2cObj, &quality_level) == UG96_RETURN_OK)
 					{
