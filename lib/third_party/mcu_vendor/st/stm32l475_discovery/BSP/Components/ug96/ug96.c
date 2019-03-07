@@ -708,9 +708,19 @@ UG96_InitRet_t  UG96_Init(Ug96Object_t *Obj)
         }
 
 	}
+
+    if(ret == RET_OK)
+	{
+		ret = AT_ExecuteCommand(Obj, UG96_TOUT_15000, (uint8_t *)"AT+QCFG=\"iotopmode\",0,1\r\n", RET_OK | RET_ERROR | RET_CME_ERROR);
+		if (RET_OK != ret)
+		{
+			ret = UG96_INIT_OTHER_ERR;
+		}
+	}
+
     if(ret == RET_OK)
     {
-    	ret = AT_ExecuteCommand(Obj, UG96_TOUT_15000, (uint8_t *)"AT+QCFG=\"nwscanseq\",010203,1\r\n", RET_OK | RET_ERROR | RET_CME_ERROR);
+    	ret = AT_ExecuteCommand(Obj, UG96_TOUT_15000, (uint8_t *)"AT+QCFG=\"nwscanseq\",01,1\r\n", RET_OK | RET_ERROR | RET_CME_ERROR);
     	if (RET_OK != ret)
     	{
     		ret = UG96_INIT_OTHER_ERR;
