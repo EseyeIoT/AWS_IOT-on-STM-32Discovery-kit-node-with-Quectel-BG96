@@ -14,6 +14,7 @@
 
 #define NETWORK_SCAN_RUN	0	// Change to 1 to enable
 #define ONLY_2G 			0	// Change to 1 to set 2G only operation
+#define ENDLESS_LOOP		0	// Change to 1 to have the MQTT keep sending forever
 
 #if NETWORK_SCAN_RUN
 #define MAJOR_VERSION 99

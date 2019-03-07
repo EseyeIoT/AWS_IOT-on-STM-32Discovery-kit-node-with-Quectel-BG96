@@ -776,8 +776,8 @@ UG96_InitRet_t  UG96_Init(Ug96Object_t *Obj)
     		ret = UG96_INIT_OTHER_ERR;
     	}
     }
-
 #endif
+
     if(ret == RET_OK)
 	{
     	ret = AT_ExecuteCommand(Obj, UG96_TOUT_15000, (uint8_t *)"AT+QCFG=\"roamservice\",2,1\r\n", RET_OK | RET_ERROR | RET_CME_ERROR);

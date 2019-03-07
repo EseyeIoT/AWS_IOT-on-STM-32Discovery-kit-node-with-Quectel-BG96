@@ -454,7 +454,11 @@ static void prvMQTTConnectAndPublishTask( void * pvParameters )
     {
         /* MQTT client is now connected to a broker.  Publish a message
          * every five seconds until a minute has elapsed. */
+#if ENDLESS_LOOP
+    	while (1)
+#else
         for( x = 0; x < xIterationsInAMinute; x++ )
+#endif // ENDLESS_LOOP
         {
         	// check we get successful publish
             if(prvPublishNextMessage( x ) == eMQTTAgentSuccess)

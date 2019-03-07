@@ -157,6 +157,11 @@ int cellular_init(void)
 	configPRINTF(("*** Firmware for 2G only ***\r\n"));
 #endif
 	configPRINTF(("*** Eseye Anynet Secure connection ***\r\n"));
+#if ENDLESS_LOOP
+	configPRINTF(("*** WARNING! Endless loop version ***\r\n"));
+	configPRINTF(("*** Unplug after running or you will use ***\r\n"));
+	configPRINTF(("*** too many msgs! WARNING! ***\r\n"));
+#endif
 
 	if(InitSensors() != 1)
 	{
