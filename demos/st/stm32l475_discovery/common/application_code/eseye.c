@@ -107,6 +107,7 @@ int8_t anynet_publiccert[2048] = {0};
 int8_t anynet_privatekey[2048] = {0};
 uint8_t anynet_converted[256];
 
+extern uint8_t closedown;
 
 struct anynet_file_details anynet_sim_file_data[5] = {
 		{AN_THINGNAME,  anynet_thingname,  0x6FE0, 0x7FEE, 0, 0, 0},
@@ -408,6 +409,8 @@ C2C_RegiStatus_t C2C_Init(uint16_t registration_timeout_sec)
 	uint32_t tickcurrent;
 	uint32_t registration_timeout_msec = registration_timeout_sec*1000;
 
+	closedown = 0;
+
 	memset(Ug96C2cObj.Imei, 0, sizeof(Ug96C2cObj.Imei));
 
 	tickstart = xTaskGetTickCount();
@@ -686,6 +689,8 @@ C2C_Ret_t C2C_StopClientConnection(uint32_t socket)
 	UG96_Conn_t conn;
 
 	configPRINTF(("Closing the client connection...\r\n"));
+
+	closedown = 1;
 	conn.ConnectID = socket;
 	if(UG96_CloseClientConnection(&Ug96C2cObj, &conn) == UG96_RETURN_OK)
 	{
