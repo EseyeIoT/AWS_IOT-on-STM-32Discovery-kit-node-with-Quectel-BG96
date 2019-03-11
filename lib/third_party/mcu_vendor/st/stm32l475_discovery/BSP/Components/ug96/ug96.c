@@ -759,7 +759,7 @@ UG96_InitRet_t  UG96_Init(Ug96Object_t *Obj)
     }
     if(ret == RET_OK)
     {
-    	ret = AT_ExecuteCommand(Obj, UG96_TOUT_15000, (uint8_t *)"AT+QCFG=\"band\", 0f, 400A0E189F, A0E189F, 1\r\n", RET_OK | RET_ERROR | RET_CME_ERROR);
+    	ret = AT_ExecuteCommand(Obj, UG96_TOUT_15000, (uint8_t *)"AT+QCFG=\"band\", 0F, 400A0E189F, A0E189F, 1\r\n", RET_OK | RET_ERROR | RET_CME_ERROR);
     	if (RET_OK != ret)
     	{
     		ret = UG96_INIT_OTHER_ERR;

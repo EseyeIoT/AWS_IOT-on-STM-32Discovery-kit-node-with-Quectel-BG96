@@ -155,6 +155,9 @@ int cellular_init(void)
 	uint8_t c2cConnectCounter = 0;
 
 	configPRINTF(("*** Eseye Anynet Secure connection ***\r\n"));
+	configPRINTF(("*** NOTE! This demo will run continuously ***\r\n"));
+	configPRINTF(("*** Unplug if you no longer want traffic into AWS ***\r\n"));
+
 
 	if(InitSensors() != 1)
 	{

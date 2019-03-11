@@ -19,7 +19,7 @@
 #define MINOR_VERSION 1
 #else
 #define MAJOR_VERSION 1
-#define MINOR_VERSION 7
+#define MINOR_VERSION 8
 #endif
 
 enum SIM_FILES_STATE {
